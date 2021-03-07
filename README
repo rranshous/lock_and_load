@@ -32,11 +32,21 @@ could than destroy the group keypair to ensure the group
 
 
 --
-gpg --quick-generate-key user-id [algo [usage [expire]]]
-gpg --output public.pgp --armor --export username@email
-gpg --output private.pgp --armor --export-secret-key username@email
 
-gpg --delete-secret-keys LnL01
-gpg --delete-keys LnL01
-gpg --import LnL01-private.pgp # does not give trust lvl
-gpg --sign-key LnL01
+# start out creating the keys for the group of devices
+# creates a key package for each device
+bin/mkrings - create group and device keys; package
+
+# on the device load the shared package
+bin/import_keys <dir_of_key_package> - load package of keys
+
+# on the device encrypt a file for the other devices
+# in it's group
+bin/encrypt_for_others <file_path> - encrypt for each sibling device
+
+[utility]
+bin/fingerprints_of_others - prints the gpg fingerprints
+ of the sibling devices
+
+[VERY DANGER]
+bin/remove_all_keys - remove all private and public keys

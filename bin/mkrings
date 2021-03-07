@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -x
+
+# Generate the group key and the 4 device keys
+seq 0 4 |
+  xargs -I{} gpg --quick-generate-key --batch --passphrase '' LnL0{}
+
+# sign each of the 4 device certs (LnL01-LnL04) with the
+# group cert LnL00
+seq 1 4 |
+  xargs -I{} gpg --batch --yes --sign-key LnL0{}
+
+# create file package for each device
+for i in `seq 1 4`
+do
+  name=LnL0${i}
+  key_dir=./device_keys/${name}
+
+  # make sure the export dir is there
+  echo "creating key dir ${key_dir}"
+  mkdir -p ${key_dir}
+
+  # let the device know its name
+  echo "LnL0${i}" > ${key_dir}/name
+
+  # export the public keys for all the devices
+  # and the group
+  echo "exporting public keys to device dir"
+  seq 0 4 |
+    xargs -I{} gpg --output ${key_dir}/LnL0{}-public.pgp --armor --export LnL0{}
+
+  # export the private key for just this device
+  gpg --output ${key_dir}/${name}-private.pgp --armor --export-secret-key ${name}
+done

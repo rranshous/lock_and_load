@@ -1,0 +1,42 @@
+goal is to create a tool / set of scripts
+which facilitate taking a file (video), encrypting
+it, hosting it and publishing it so that it can
+only be read by a set of users with a shared key (keys?)
+
+targeting rpi hardware
+
+capture video - perhaps out of scope
+encrypt video - only want those i trust to watch
+host video - ipfs
+publish video - on chain (xdai?)
+manage keys - at least a folder format, prob script to create
+
+
+--
+PGP keyring - each device has public/private key. for max security the
+broadcasting device would need to encrypt the video seperately for each
+recipient (using the recipients public key). This would mean we'd end
+up with P files to publish and host. With video the amt of data could
+become and issue (locally) though the current in-mind use case would
+only have a single video being published at any time (per device)
+
+Set up keyrings for each device and ship the paired devices
+with complete trust in each other's pgp certs
+
+a keypair for the group
+a keypair for each device who's cert is signed by group
+(basically a ring where each device has on of the non
+ master keys?)
+could than destroy the group keypair to ensure the group
+ never grows
+
+
+--
+gpg --quick-generate-key user-id [algo [usage [expire]]]
+gpg --output public.pgp --armor --export username@email
+gpg --output private.pgp --armor --export-secret-key username@email
+
+gpg --delete-secret-keys LnL01
+gpg --delete-keys LnL01
+gpg --import LnL01-private.pgp # does not give trust lvl
+gpg --sign-key LnL01

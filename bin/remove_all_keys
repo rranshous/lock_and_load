@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+gpg --list-keys | grep '^ ' |
+  xargs gpg --batch --yes --delete-secret-and-public-key

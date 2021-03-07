@@ -20,3 +20,9 @@ echo "${fingerprint}:6" | gpg --import-ownertrust
 
 # import the group + device public keys
 gpg --import ${path}/LnL0*-public.pgp
+
+# sign the sigbling keys
+for fingerprint in `gpg --list-keys --with-colons | grep fpr | sed -n '0~2!p' | cut -d':' -f 10 | tail -n +3`
+do
+  gpg --batch --yes --sign-key ${fingerprint}
+done

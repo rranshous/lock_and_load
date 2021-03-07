@@ -15,8 +15,6 @@ name=`cat ${path}/name`
 gpg --import ${path}/${name}-private.pgp
 
 # set key as ultimately trusted
-#  internet says this is bad form, use --with-colons for steady
-#  output from tool that is meant to be parsed
 fingerprint=`gpg --list-keys --with-colons ${name} | grep 'fpr' | head -n 1 | cut -d':' -f 10`
 echo "${fingerprint}:6" | gpg --import-ownertrust
 

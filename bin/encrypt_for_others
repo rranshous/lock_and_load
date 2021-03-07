@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# encrypt the given file once for each
+# of the other members of the group
+
+set -x
+
+file_path=$1
+file_name=`basename ${file_path}`
+out_dir="./encrypted_files"
+mkdir -p ${out_dir}
+
+for fingerprint in `gpg --list-keys --with-colons | grep fpr | sed -n '0~2!p' | cut -d':' -f 10 | tail -n +3`
+do
+  gpg --yes --recipient ${fingerprint} --encrypt < ${file_path}
+  # --output ${out_dir}/${file_name}-${fingerprint} 
+done

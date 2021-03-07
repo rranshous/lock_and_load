@@ -6,12 +6,18 @@ set -x
 seq 0 4 |
   xargs -I{} gpg --quick-generate-key --batch --passphrase '' LnL0{}
 
+# sign the group cert with each of the device certs
+seq 1 4 |
+  xargs -I{} gpg --batch --yes --default-key LnL0{} --sign-key LnL00
+
 # sign each of the 4 device certs (LnL01-LnL04) with the
 # group cert LnL00
 seq 1 4 |
   xargs -I{} gpg --batch --yes --sign-key LnL0{}
 
 # create file package for each device
+# dir for each device containing it's public/private keys
+# and the public keys for all the other devices + the group
 for i in `seq 1 4`
 do
   name=LnL0${i}

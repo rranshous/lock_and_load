@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# imports keys from exported device directory
+# imports this devices private/public key first
+# than the group key than the other devices
+# each of the other devices and the group
+# should be imported as trusted
+
+set -x
+
+path=$1
+name=`cat ${path}/name`
+
+# import the devices key
+gpg --import ${path}/${name}-private.pgp
+
+# set key as ultimately trusted
+fingerprint=`gpg --list-keys ${name} | grep '^ ' | xargs`
+echo "${fingerprint}:6" | gpg --import-ownertrust
+
+# import the group + device public keys
+gpg --import ${path}/LnL0*-public.pgp
